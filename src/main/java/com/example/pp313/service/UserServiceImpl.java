@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,6 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
-    @Transactional
     @Override
     public List<User> allUsers() {
         return userDao.allUsers();
@@ -47,13 +47,11 @@ public class UserServiceImpl implements UserService {
         userDao.edit(user);
     }
 
-    @Transactional
     @Override
     public User getById(long id) {
         return userDao.getById(id);
     }
 
-    @Transactional
     @Override
     public User findByUsername(String userName) {
         return userDao.findByUsername(userName);
@@ -70,5 +68,19 @@ public class UserServiceImpl implements UserService {
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+    }
+    @Override
+    public Collection<Role> roleSet(String ADMIN, String USER) {
+        Collection<Role> roles = new HashSet<>();
+        if (ADMIN != null) {
+            roles.add(new Role(1L, "ADMIN"));
+        }
+        if (USER != null) {
+            roles.add(new Role(2L, "USER"));
+        }
+        if (ADMIN == null && USER == null) {
+            roles.add(new Role(2L, "USER"));
+        }
+        return roles;
     }
 }

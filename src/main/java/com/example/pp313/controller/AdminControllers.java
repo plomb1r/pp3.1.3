@@ -37,7 +37,7 @@ public class AdminControllers {
     public String editUser(@ModelAttribute("user") User user,
                            @RequestParam(required = false, name = "ADMIN") String ADMIN,
                            @RequestParam(required = false, name = "USER") String USER) {
-        user.setRoles(roleSet(ADMIN, USER));
+        user.setRoles(userService.roleSet(ADMIN, USER));
         userService.edit(user);
         return "redirect:/admin";
     }
@@ -52,7 +52,7 @@ public class AdminControllers {
     public String addUser(@ModelAttribute("User") User user,
                           @RequestParam(required = false, name = "ADMIN") String ADMIN,
                           @RequestParam(required = false, name = "USER") String USER) {
-        user.setRoles(roleSet(ADMIN, USER));
+        user.setRoles(userService.roleSet(ADMIN, USER));
         userService.add(user);
         return "redirect:/admin";
     }
@@ -61,19 +61,5 @@ public class AdminControllers {
     public String deleteUser(@PathVariable long id) {
         userService.remove(userService.getById(id));
         return "redirect:/admin";
-    }
-
-    private static Collection<Role> roleSet(String ADMIN, String USER) {
-        Collection<Role> roles = new HashSet<>();
-        if (ADMIN != null) {
-            roles.add(new Role(1L, "ADMIN"));
-        }
-        if (USER != null) {
-            roles.add(new Role(2L, "USER"));
-        }
-        if (ADMIN == null && USER == null) {
-            roles.add(new Role(2L, "USER"));
-        }
-        return roles;
     }
 }
